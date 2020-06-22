@@ -1,0 +1,201 @@
+#​ ​-----------​ ​HEADING​ ​--------------- 
+#​ ​Bartu​ ​Atabek
+#​ ​21602229
+#​ ​CS224-6
+#​ ​Lab​ ​1​ ​Part 1​ ​Section​ ​1
+#​ ​-----------​ ​PROGRAM​ ​START​ ​--------------
+.text 
+	.globl __start #​ ​execution​ ​starts​ ​here
+__start:
+
+sizeCheck:	
+	la $a0, str0 # system call to ask the user for the array size
+	li $v0, 4
+	syscall	
+	
+	li $v0, 5 # system call to read user input
+	syscall
+	
+	sw $v0, size  # compare user input if not valid ask again
+	lw $t1, size
+	bgt $t1, 20, sizeCheck
+	
+		
+	la $t1, array # point to the index of the first element in array
+	lw $t4, size # load array size to $t4
+	
+	la $a0, str1 # system call to ask the user for the array elements
+	li $v0, 4
+	syscall	
+	
+addItem:	
+	li $v0, 5
+	syscall
+	
+	sw $v0, 0($t1)
+	addi $t1, $t1, 4
+	addi $t4, $t4, -1
+	bgt $t4, $zero, addItem # while($t4 > 0) add an item to the array
+	
+	
+	la $t1, array # point to the index of the first element in array
+	lw $t4, size
+		
+	la  $a0, str2 # system call to print "Display array"
+    	li  $v0, 4          
+    	syscall
+	jal display # call display
+	
+	la $t1, array  # load the address of array to $t1
+	lw $t2, size  # load the address of last element to $t2
+	subi $t2, $t2, 1
+	mul $t2, $t2, 4
+	add $t2, $t2, $t1
+	jal reverse
+		
+  	la $t1, array # point to the index of the first element in array
+	lw $t4, size	
+	
+	la  $a0, str3 # system call to print "Display reverse array"
+    	li  $v0, 4          
+    	syscall
+    	jal display # call display
+    	
+    	li $v0, 10 # ​system​ ​call​ ​to​ ​exit
+	syscall
+	
+#------------------------------------------------	
+display:	
+	lw $a0, ($t1)
+	li $v0, 1
+	syscall
+	
+	la  $a0, space # print space
+    	li  $v0, 4          
+    	syscall
+	
+	addi $t1, $t1, 4
+	addi $t4, $t4, -1
+	bgt $t4, $zero, display # while($t4 > 0)
+	
+reverse:
+	bge $t1, $t2, done
+	
+	lw $t3, 0($t1)
+	lw $t4, 0($t2)
+	
+	sw $t4, 0($t1)
+	sw $t3, 0($t2)
+	
+	addi $t1, $t1, 4
+	subi $t2, $t2, 4
+	
+	b reverse
+	
+done:
+	jr $ra
+		
+#------------​ ​DATA​ ​------------------
+	.data
+array: 	.space 80
+size:	.word 0
+str0: 	.asciiz "Enter the size of the array: "
+str1: 	.asciiz "Enter the elements of the array: \n"
+str2: 	.asciiz "\nDisplay array\n"
+str3: 	.asciiz "\n\nDisplay reverse array\n"
+space:  .asciiz " "
+#------------​ ​END​ ​OF​ ​PROGRAM​ ​-------------
+
+
+#​ ​-----------​ ​HEADING​ ​--------------- 
+#​ ​Bartu​ ​Atabek
+#​ ​21602229
+#​ ​CS224-6
+#​ ​Lab​ ​1​ ​Part 1​ ​Section​ ​2 (c-d) % 2
+#​ ​-----------​ ​PROGRAM​ ​START​ ​--------------
+.text 
+	.globl __start #​ ​execution​ ​starts​ ​here
+__start:
+
+	la $a0, str0 # system call code for read_int c
+	li $v0, 4          
+  	syscall 
+  	
+  	li $v0, 5
+  	syscall
+  	sw $v0, c
+  	lw $t0, c
+  	
+  	
+  	la $a0, str1 # system call code for read_int d
+	li $v0, 4         
+  	syscall
+  	
+  	li $v0, 5
+  	syscall
+  	sw $v0, d 
+  	lw $t1,d                
+	
+	# expression operations
+  	sub $t2, $t0, $t1 # operation (c-d)
+  	rem $t3, $t2, 2 # operation % 2
+  	sw $t3, x
+  	
+  	# system call to print the result
+  	la $a0, str2
+	li $v0, 4          
+  	syscall 
+  	
+	li $v0, 1  
+	move $a0, $t3        
+  	syscall
+
+	li $v0,10  # system call to exit
+	syscall
+
+#------------​ ​DATA​ ​------------------
+	.data
+x:  	.word 0
+c:  	.word 0
+d:  	.word 0
+str0: 	.asciiz "Enter c: "
+str1: 	.asciiz "Enter d: "
+str2: 	.asciiz "x = "
+#------------​ ​END​ ​OF​ ​PROGRAM​ ​-------------
+
+la $t1, a :
+
+-	lui $at, 0x1001
+
+Binary: 00111100000000010001000000000001
+Hexadecimal: 0x3C011001
+
+-	ori $t1, $at, 0x0008
+
+Binary: 00110100001010010000000000001000
+Hexadecimal: 0x34290008
+
+la $at, 0x1001 :
+
+-	lui $at, 0x1001
+
+Binary: 00111100000000010001000000000001
+Hexadecimal: 0x3C011001
+
+-	ori $t2, $at, , 0x0018
+
+Binary: 00110100001010100000000000011000
+Hexadecimal: 0x342A018
+
+Symbolic Machine Instruction: A symbolic representation of the machine code needed to program a given CPU architecture.
+	add $d, $s, $t
+	beq $s, $t, offset
+Machine Instruction: A set of instructions executed directly by a computer's central processing unit (CPU).
+	01 4B 48 2016  (0x014B4820)
+	34 2A 00 1816  (0x342A0018)
+Assembler Directive: Instructions that direct the assembler to do something
+ 	.data
+ 	.asciiz
+Pseudo Instruction: Special commands to the assembler about, the address the program should presumed to be assembled at, data declarations, the title and printing options for the program, and end of source code. Unless a machine instruction is issued, these do not generate executable code.
+ 	la $t1, A 
+	move $t, $s

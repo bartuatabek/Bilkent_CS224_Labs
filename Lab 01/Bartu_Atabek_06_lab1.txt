@@ -1,0 +1,433 @@
+##
+## Program1.asm - prints out "hello world"
+##
+##	a0 - points to the string
+##
+
+#################################
+#			 	#
+#	text segment		#
+#				#
+#################################
+
+	.text		
+	.globl __start 
+
+__start:		# execution starts here
+	la $a0,str	# put string address into a0
+	li $v0,4	# system call to print
+	syscall		#   out a string
+
+	li $v0,10  	# system call to exit
+	syscall		#    bye bye
+
+
+#################################
+#			 	#
+#     	 data segment		#
+#				#
+#################################
+
+	.data
+str:	.asciiz "Hello Bartu\n"
+n:	.word	10
+
+##
+## end of file Program1.asm
+
+##
+## Program2.asm asks user for temperature in Celsius,
+##  converts to Fahrenheit, prints the result.
+##
+##	v0 - reads in Celsius
+##	t0 - holds Fahrenheit result
+##	a0 - points to output strings
+##
+
+#################################
+#				#
+#	text segment		#
+#				#
+#################################
+
+	.text		
+	.globl __start	
+
+__start:
+	la $a0,prompt	# output prompt message on terminal
+	li $v0,4	# syscall 4 prints the string
+	syscall
+
+	li $v0, 5	# syscall 5 reads an integer
+	syscall
+
+	mul $t0,$v0,9	# to convert,multiply by 9,
+	div $t0,$t0,5	# divide by 5, then
+	add $t0,$t0,32	# add 32
+
+	la $a0,ans1	# print string before result
+	li $v0,4
+	syscall
+
+	move $a0,$t0	# print integer result
+	li $v0,1	# using syscall 1
+	syscall
+
+	la $a0,endl	# system call to print
+	li $v0,4	# out a newline
+	syscall 
+
+	li $v0,10	# system call to exit
+	syscall		#    bye bye
+
+
+#################################
+#			 	#
+#     	 data segment		#
+#				#
+#################################
+
+	.data
+prompt:	.asciiz "Enter temperature (Celsius): "
+ans1:		.asciiz "The temperature in Fahrenheit is "
+endl:		.asciiz "\n"
+
+##
+## end of file Program2.asm
+
+##
+##	Program3.asm is a loop implementation
+##	of the Fibonacci function
+##        
+
+#################################
+#				#
+#	text segment		#
+#				#
+#################################
+
+	.text		
+.globl __start
+ 
+__start:			# execution starts here
+	li $a0,9		# to calculate fib(7)
+	jal fib		# call fib
+	move $a0,$v0	# print result
+	li $v0, 1
+	syscall
+
+	la $a0,endl		# print newline
+	li $v0,4
+	syscall
+
+	li $v0,10
+	syscall		# bye bye
+
+#------------------------------------------------
+
+
+fib:	move $v0,$a0	# initialise last element
+	blt $a0,2,done	# fib(0)=0, fib(1)=1
+
+	li $t0,0		# second last element
+	li $v0,1		# last element
+
+loop:	add $t1,$t0,$v0	# get next value
+	move $t0,$v0	# update second last
+	move $v0,$t1	# update last element
+	sub $a0,$a0,1	# decrement count
+	bgt $a0,1,loop	# exit loop when count=0
+done:	jr $ra
+
+#################################
+#			 	#
+#     	 data segment		#
+#				#
+#################################
+
+	.data
+endl:	.asciiz "\n"
+
+##
+## end of Program3.asm
+
+#​ ​-----------​ ​HEADING​ ​--------------- 
+#​ ​Bartu​ ​Atabek
+#​ ​21602229
+#​ ​CS224-6
+#​ ​Lab​ ​1​ ​Part 4
+#​ ​-----------​ ​PROGRAM​ ​START​ ​--------------
+.text 
+	.globl __main #​ ​execution​ ​starts​ ​here
+__main:
+
+#  Input Operations
+#------------------------------------------------
+	la $a0, str0 # system call to ask for user input
+	li $v0, 4
+	syscall	
+	
+   	li $v0, 5 # system call to read user input
+	syscall
+	move $s0, $v0 # move a to $s0
+	
+	la $a0, str1 # system call to ask for user input
+	li $v0, 4
+	syscall	
+	
+   	li $v0, 5 # system call to read user input
+	syscall
+	move $s1, $v0 # move b to $s1
+	
+	la $a0, str2 # system call to ask for user input
+	li $v0, 4
+	syscall	
+	
+   	li $v0, 5 # system call to read user input
+	syscall
+	move $s2, $v0 # move c to $s2
+	
+	la $a0, str3 # system call to ask for user input
+	li $v0, 4
+	syscall	
+	
+   	li $v0, 5 # system call to read user input
+	syscall
+	move $s3, $v0 # move d to $s3
+	
+	la $a0, str4 # system call to ask for user input
+	li $v0, 4
+	syscall	
+	
+   	li $v0, 5 # system call to read user input
+	syscall
+	move $s4, $v0 # move e to $s4
+
+#  Arithmetic Operations
+#------------------------------------------------
+operations:
+	div $t5, $s0, $s1 # operation: '(A/B)'
+	add $t6, $s2, $s3 # operation: '(C+D)'
+	sub $t7, $t5, $t6 # operation: '(A/B) - (C+D)'
+	rem $t8, $t7, $s4 # operation: '(A/B) - (C+D) % E'
+
+	la $a0, str5 # system call to print results notifier
+	li $v0, 4
+	syscall	
+	
+   	li $v0, 1 # system call to print the result
+    	move $a0, $t8 # move the results from $t8 to $a0
+  	syscall
+
+# Exit Operation 
+#------------------------------------------------
+exit:
+    	li $v0, 10 # ​system​ ​call​ ​to​ ​exit
+	syscall	
+	
+#------------​ ​DATA​ ​------------------
+	.data
+str0:	.asciiz "Enter a: "
+str1:	.asciiz "Enter b: "
+str2:	.asciiz "Enter c: "
+str3:	.asciiz "Enter d: "
+str4:	.asciiz "Enter e: "
+str5:	.asciiz "The result of the operation '((A/B)-(C+D))%E' is: "
+#------------​ ​END​ ​OF​ ​PROGRAM​ ​-------------
+
+#​ ​-----------​ ​HEADING​ ​--------------- 
+#​ ​Bartu​ ​Atabek
+#​ ​21602229
+#​ ​CS224-6
+#​ ​Lab​ ​1​ ​Part 5
+#​ ​-----------​ ​PROGRAM​ ​START​ ​--------------
+.text 
+	.globl __start #​ ​execution​ ​starts​ ​here
+__start:
+	
+sizeCheck:	
+	la $a0, str0 # system call to ask the user for the array size
+	li $v0, 4
+	syscall	
+	
+	li $v0, 5 # system call to read user input
+	syscall
+	
+	sw $v0, size # compare user input if not valid ask again
+	lw $t0, size # load array size to $t1
+	bgt $t0, 100, sizeCheck
+	blt $t0, 1, sizeCheck
+			
+	la $t1, array # point to the index of the first element in array
+	
+	la $a0, str1 # system call to ask the user for the array elements
+	li $v0, 4
+	syscall	
+	
+addItem:	
+	li $v0, 5 # system call to read user input
+	syscall
+	
+	sw $v0, 0($t1) # storing array element
+	addi $t1, $t1, 4
+	addi $t0, $t0, -1
+	bgt $t0, $zero, addItem # while(size > 0) add an item to the array
+	
+displayMenu:	
+	la $a0, menu # system call to print menu
+	li $v0, 4
+	syscall	
+	
+	li $v0, 5
+	syscall
+
+	beq $v0, 1, operation1 # if (input == 1) {goto sum}
+    	beq $v0, 2, operation2 # if (input == 2) {goto sum_2}
+  	beq $v0, 3, operation3 # if (input == 3) {goto occurence}
+  	beq $v0, 4, exit # if(input == 4) {goto exit}
+  	b displayMenu
+  	jr $ra
+
+# Operation 1
+#------------------------------------------------
+operation1:
+   	la $a0, str2 # system call to ask for user input
+	li $v0, 4
+	syscall	
+	
+   	li $v0, 5 # system call to read user input
+	syscall
+		
+	lw $t0, size # load array size to $t1
+	la $t1, array # point to the index of the first element in array
+	move $t2, $zero	# sum of numbers initialized as 0
+	move $t3, $v0 # move user input to $t3
+		
+whileOp1:
+	beq $t0, $zero, endOperation1
+	lw $t4, 0($t1)
+	bgt $t4, $t3, addToSum
+	addi $t0, $t0, -1
+	addi $t1, $t1, 4
+	j whileOp1
+	
+addToSum:
+	add $t2, $t2, $t4
+	addi $t0, $t0, -1
+	addi $t1, $t1, 4
+	j whileOp1
+	
+endOperation1:
+	la $a0, str3 # system call to print results
+	li $v0, 4
+	syscall	
+	
+	li $v0, 1
+    	move $a0, $t2
+  	syscall
+  	
+  	jal displayMenu
+  	
+# Operation 2
+#------------------------------------------------	
+operation2:
+	lw $t0, size
+	la $t1, array
+	move $t2, $zero	# sum of even numbers initialized as 0
+	move $t3, $zero	# sum of odd numbers initialized as 0
+	
+whileOp2:
+	beq $t0, $zero, endOperation2
+	lw $t4, 0($t1)
+	rem $t5, $t4, 2
+	beq $t5, $zero, even
+	add $t3, $t3, $t4
+	addi $t0, $t0, -1
+	addi $t1, $t1, 4
+	j whileOp2
+	
+even:
+	add $t2, $t2, $t4
+	addi $t0, $t0, -1
+	addi $t1, $t1, 4
+	j whileOp2
+	
+endOperation2:
+	la $a0, str4 # system call to print results
+	li $v0, 4
+	syscall	
+	
+	li $v0, 1
+    	move $a0, $t2
+  	syscall
+  	
+  	la $a0, str5 # system call to print results
+	li $v0, 4
+	syscall	
+	
+	li $v0, 1
+    	move $a0, $t3
+  	syscall
+  	
+  	jal displayMenu
+  
+# Operation 3
+#------------------------------------------------	
+operation3:
+    	la $a0, str2 # system call to ask for user input
+	li $v0, 4
+	syscall	
+	
+   	li $v0, 5 # system call to get user input
+	syscall
+	
+	lw $t0, size
+	la $t1, array
+	move $t2, $zero	# sum of even numbers initialized as 0
+	move $t3, $v0	# input number
+	
+whileOp3:
+	beq $t0, $zero, endOperation3
+	lw $t4, 0($t1) # load current element to $t4
+	rem $t5, $t4, $t3 # find the remainder 
+	beq $t5, $zero, divisible # if current element is divisible by the input number go to divisible
+	addi $t0, $t0, -1
+	addi $t1, $t1, 4
+	j whileOp3
+	
+divisible:
+	addi $t2, $t2, 1 # add 1 to number of occurrences
+	addi $t0, $t0, -1
+	addi $t1, $t1, 4
+	j whileOp3
+	
+endOperation3:
+	la $a0, str6 # system call to print results
+	li $v0, 4
+	syscall	
+	
+	li $v0, 1
+    	move $a0, $t2
+  	syscall
+  	
+  	jal displayMenu
+  
+# Exit Operation 
+#------------------------------------------------
+exit:
+    	li $v0, 10 # ​system​ ​call​ ​to​ ​exit
+	syscall	
+	
+#------------​ ​DATA​ ​------------------
+	.data
+array: 	.space 400
+size:	.word 0
+str0: 	.asciiz "Enter the size of the array: "
+str1: 	.asciiz "Enter the elements: \n"
+str2:	.asciiz "Enter a number: "
+str3: 	.asciiz "Summation of numbers greater than input numbers is: "
+str4: 	.asciiz "\nSummation of even numbers is: "
+str5: 	.asciiz "\nSummation of odd numbers is: "
+str6:	.asciiz "\nNumber of occurences of the array elements divisible by a certain input number is: "
+menu:	.asciiz "\n\nChoose an operation from the menu:\n1. Find summation of numbers stored in the array which is greater than an input number.\n2. Find summation of even and odd numbers and display them.\n3. Display the number of occurrences of the array elements divisible by a certain input number.\n4. Quit\n"
+#------------​ ​END​ ​OF​ ​PROGRAM​ ​-------------
