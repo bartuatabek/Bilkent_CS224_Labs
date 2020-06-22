@@ -1,0 +1,83 @@
+Question I
+Single-cycle processor means that all operations/instructions take the same amount of time; where the slowest instruction determines the clock cycle time. The differences between single-cycle, multi-cycle and pipelined architectures are that in multi-cycle architectures instructions are broken into series of multiple cycles/stages. Each instruction executes in n cycles, where n varies according to the instruction and the slowest stage determines the cycle time. Also, it allows faster operations to take less time than slower ones, so overall performance can be increased. In pipelined architectures each instruction broken up into series of steps and gains efficiency by overlapping the execution of multiple instructions, increasing hardware utilization and potentially leading to big performance gains.
+
+Question II
+Datapath:
+PC (Program counter): Stores the address of the instruction to be executed.
+Instruction Memory: Takes the instruction address from the PC register and fetches the instruction in that address.
+Register File: Stores 32-bit values. Collection of registers that can be read or written by specifying register number.
+Sign Extend: The 16-bit immediate value might be either positive or negative, it must be sign extended to 32 bits.
+ALU (Arithmetic Logic Unit): Based on the control signal it gets from the control unit and the inputs it takes from the register file or immediate value depending on the instruction, it executes a certain operation i.e.(add, sub, and, or, etc.) on the inputs then outputs the result.
+Data Memory: The program data sometimes cannot be stored on register file so that it acts like RAM and stores the program data. Processor either store data from the register file to data memory or vice versa load data from data memory to register file depending on the instruction requirements.
+Shifter: The next PC value for a taken branch is computed by shifting SignImm left by 2 bits which is the equivalent for multiplying by 4.
+
+Control Unit:
+Main Decoder: Computes most of the outputs from the opcode. It also determines a 2-bit ALUOp signal.
+ALU Decoder: Uses the ALUOp signal in conjunction with the finch field to compute ALUControl signals which determines the which ALU operations to perform.
+
+Question III
+SignExtend(input [16] a,
+           output [32] y)
+
+Mux(input control,
+    input a,b,
+    output resutl)
+
+ShiftLeft2(input [32] a,
+           output [32] y)
+
+Adder(input [32] a, b, 
+      output [32] y)
+
+PC(input clk,
+   input [32] PCNext,
+   output [32] PCCurrent)
+
+RegisterFile(input clk,
+             input we3, 
+             input [5] ra1, ra2, wa3,  
+             input [32] wd3,
+             output [32] rd1, rd2)
+
+ALU(input [3] ALUControl,
+    input [32] srcA, srcB
+    output [32] ALUResult
+    output zero)
+
+DataMemory(input clk, we
+           input [32] wd, a
+           output [32] rd)
+
+ControlUnit(input [6] op, funct,
+            output [3] ALUControl,
+            output memtoReg, memWrite, branch,
+            Output ALUSrc, regDst,regWrite)
+
+Question IV
+
+Instruction Location	Machine instruction	Assembly language equivalent
+0x00000000	0x20020005	addi $v0, $zero, 5
+0x00000004	0x2003000C	addi $v1, $zero, 12
+0x00000008	0x2067FFF7	addi $a3, $v1, -9
+0x0000000C	0x00E22025	or $a0, $a3, $v0
+0x00000010	0x00642824	and $a1, $v1, $a0
+0x00000014	0x00A42820	add $a1, $a1, $a0
+0x00000018	0x10A7000A	beq $a1, $a3, 0x00000044
+0x0000001C	0x0064202A	slt $a0, $v1, $a0
+0x00000020	0x10800001	beq $a0, $zero, 0x00000028
+0x00000024	0x20050000	addi $a1, $zero, 0
+0x00000028	0x00E2202A	slt $a0, $a3, $v0
+0x0000002C	0x00853820	add $a3, $a0, $a1
+0x00000030	0x00E23822	sub $a3, $a3, $v0
+0x00000034	0xAC670044	sw $a3, 68($v1)
+0x00000038	0x8C020050	lw $v0, 80($zero)
+0x0000003C	0x08000011	j 0x00000044
+0x00000040	0x20020001	addi $v0, $zero, 1
+0x00000044	0xAC020054	sw $v0, 84($zero)
+0x00000048	0x08000012	j 0x00000048
+
+
+
+
+
+
